@@ -3,8 +3,12 @@ syntax = "proto3";
 package genproto;
 option go_package="genproto/auth_service";
 
+import "auth.proto";
+
 service AuthService {
-  rpc LoginUser(LoginRequest) returns (LoginResponse) {}
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc FindOne(FindOneRequest) returns (FindOneResponse) {}
 }
 
 message LoginRequest {

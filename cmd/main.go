@@ -1,28 +1,22 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	auth "github.com/abrorbeksoft/admin_api_gateway/genproto/auth_service"
-	"google.golang.org/grpc"
+	"github.com/abrorbeksoft/admin_api_gateway/api"
+	"github.com/abrorbeksoft/admin_api_gateway/config"
+	"github.com/abrorbeksoft/admin_api_gateway/servise"
 )
 
 func main(){
-	var (
-		res *auth.LoginResponse
-	)
-	conAuthService,err:=grpc.Dial("localhost:8000",grpc.WithInsecure())
-	if err != nil {
+	cfg:=config.Load();
+	grpcServices,err:=servise.NewGrpcClients(cfg)
+	if err!= nil {
 		fmt.Println(err.Error())
 	}
-	authService:=auth.NewAuthServiceClient(conAuthService)
-	res,err=authService.LoginUser(context.Background(),&auth.LoginRequest{
-		Login: "sdfldfmlds",
-		Password: "sdmfldmflsd",
+
+	server:=api.New(&api.RouterOptions{
+		Service: grpcServices,
 	})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	fmt.Println(res)
-	fmt.Println("Hello world")
+
+	server.Run(":8080")
 }
